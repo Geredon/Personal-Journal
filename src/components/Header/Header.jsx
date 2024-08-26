@@ -1,9 +1,9 @@
-import './Header.css';
+import styles from './Header.module.css';
 
 
 const Header= () => {
 	return(
-		<h1 className="logo">Personal Journal</h1>
+		<h1 className={styles.logo}>Personal Journal</h1>
 	);
 
 };

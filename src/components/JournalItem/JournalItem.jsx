@@ -2,7 +2,8 @@ import './JournalItem.css';
 
 
 const JournalItem = ({ title, text, date }) =>  {
-	const formattedDate =  new Intl.DateTimeFormat('ru-Ru').format(date);
+	const isValidDate = (date) => date instanceof Date && !isNaN(date.getTime());
+	const formattedDate = isValidDate(date) && new Intl.DateTimeFormat('ru-Ru').format(date);
 
 	return (
 		<div className="journal-item">
