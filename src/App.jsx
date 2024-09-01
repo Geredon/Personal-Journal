@@ -7,34 +7,27 @@ import Header from './components/Header/Header.jsx';
 import JournalList from './components/JournalList/JournalList.jsx';
 import JournalAddButton from './components/JournalAddButton/JournalAddButton.jsx';
 import {JournalForm} from './components/JournalForm/JournalForm.jsx';
-import {useEffect, useState} from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import {useLocalStorage} from './hooks/useLocalStorage.hook.js';
+
+
+const mapItems = (items) => {
+	if (!items) return [];
+
+	return items.map(i => ({
+		...i,
+		date: new Date(i.date)
+	}));
+};
 
 function App() {
-	const [items, setItems] = useState([]);
+	const [items, setItems] = useLocalStorage('data');
 
-	useEffect(() => {
-		const data = JSON.parse(localStorage.getItem('data'));
-		if (data) {
-			setItems(data.map((item) => ({
-				...item,
-				date: new Date(item.date)
-			})));
-		}
-	}, []);
-
-	useEffect(() => {
-		if (items.length) {
-			localStorage.setItem('data', JSON.stringify(items));
-		}
-
-	}, [items]);
-
-	const addItem = (newItem) => {
-		setItems((oldItems) => [...oldItems, {
-			post: newItem.post,
-			title: newItem.title,
-			date: new Date(newItem.date),
+	const addItem = (item) => {
+		setItems([...mapItems(items), {
+			post: item.post,
+			title: item.title,
+			date: new Date(item.date),
 			id: uuidv4()
 		}]);
 	};
@@ -53,7 +46,7 @@ function App() {
 				<Header/>
 				<JournalList>
 					<JournalAddButton/>
-					{items?.length && items.sort(handleSortItems).map((item) => (
+					{mapItems(items).sort(handleSortItems).map((item) => (
 						<CardButton key={item.id}>
 							<JournalItem
 								title={item.title}
