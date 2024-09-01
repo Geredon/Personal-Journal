@@ -7,36 +7,32 @@ import Header from './components/Header/Header.jsx';
 import JournalList from './components/JournalList/JournalList.jsx';
 import JournalAddButton from './components/JournalAddButton/JournalAddButton.jsx';
 import {JournalForm} from './components/JournalForm/JournalForm.jsx';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-const INITIAL_DATA = [
-	{
-		title:'Подготовка обновления курсов',
-		date: new Date(),
-		text: 'Горные походы открывают удивительные природыне ландшафты',
-		id: uuidv4()
-	},
-	{
-		title:'Поход в горы',
-		date: new Date(),
-		text: 'Горные походы открывают удивительные природыне ландшафты',
-		id: uuidv4()
-	},
-	{
-		title:'Развлечься',
-		date: new Date(),
-		text: 'Горные походы открывают удивительные природыне ландшафты',
-		id: uuidv4()
-	}
-];
-
 function App() {
-	const [items, setItems] = useState(INITIAL_DATA);
+	const [items, setItems] = useState([]);
+
+	useEffect(() => {
+		const data = JSON.parse(localStorage.getItem('data'));
+		if (data) {
+			setItems(data.map((item) => ({
+				...item,
+				date: new Date(item.date)
+			})));
+		}
+	}, []);
+
+	useEffect(() => {
+		if (items.length) {
+			localStorage.setItem('data', JSON.stringify(items));
+		}
+
+	}, [items]);
 
 	const addItem = (newItem) => {
 		setItems((oldItems) => [...oldItems, {
-			text: newItem.text,
+			post: newItem.post,
 			title: newItem.title,
 			date: new Date(newItem.date),
 			id: uuidv4()
